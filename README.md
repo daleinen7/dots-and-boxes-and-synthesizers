@@ -1,6 +1,6 @@
 # Dots and Boxes
 ## Rules
-A game respectable game of dots and boxes is played between two people. They take turns drawing a line between dots. If one player completes a 4 sided box then they can make an additional line.
+A respectable game of dots and boxes is played between two people. They take turns drawing a line between dots. If one player completes a 4 sided box then they can make an additional line.
 
 When all the dots are connected, the player with the most completed boxes wins. 
 
