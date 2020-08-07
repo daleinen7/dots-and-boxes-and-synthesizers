@@ -1,5 +1,16 @@
+:root {
+    --bg-color: #9c7a97;
+    --board: #888DA7;
+    --lines: #727897;
+    --player-1-color: #303633;
+    --player-2-color: #8BE8CB;
+    --player-1-box: #56615B;
+    --player-2-box: #BBF2E0;
+
+}
+
 body {
-    background-color: gray;
+    background-color: var(--bg-color);
     color: white;
     font-family: helvetica;
 }
@@ -10,13 +21,13 @@ main {
     display: flex;
     justify-content: start;
     flex-wrap: wrap;
-    background-color: darkslategray
+    background-color: var(--board);
 }
 
 .box {
     width: 200px;
     height: 200px;
-    background-color: darkslategray;
+    background-color: var(--board);
     text-align: center;
     font-size: 2em;
 }
@@ -33,11 +44,11 @@ main {
     width: 200px;
     height: 20px;
     margin-left: 20px;
-    background-color: turquoise;
+    background-color: var(--lines);
 }
 
 .vert-line {
     width: 20px;
     height: 200px;
-    background-color: turquoise;
+    background-color: var(--lines);
 }

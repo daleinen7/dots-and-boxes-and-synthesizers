@@ -4,8 +4,6 @@ const PLAYER2COLOR = 'purple';
 
 /*----- app's state (variables) -----*/
 
-
-
 const lines = [
     ['I am a hack'],
     [1],
@@ -43,11 +41,13 @@ const lines = [
 
 let selectedLines;
 let playerTurn;
+let message;
 
 /*----- cached element references -----*/
 const main = document.getElementById('main');
 const lineEls = document.querySelectorAll('.line');
 const boxesEls = document.querySelectorAll('.box');
+const messageArea = document.querySelector('h2');
 /*----- event listeners -----*/
 main.addEventListener('click', clickLine);
 
@@ -70,30 +70,75 @@ function clickLine(e) {
 
 // Handle Main Logic
 function gameLogic(lineID) {
-    const preBoxSitch = checkClosedBox().filter(box => box >= 4);
+    const preBoxSitch = checkClosedBox().filter(box => Math.abs(box) >= 4);
 
     // Add selected line to selectedLines array
     selectedLines.push(lineID);
 
-    const newBoxSitch = checkClosedBox().filter(box => box >= 4);
+    const newBoxSitch = checkClosedBox().filter(box => Math.abs(box) >= 4);
 
+    // console.log(preBoxSitch.reduce((acc, current)=>acc+current, 0), newBoxSitch.reduce((acc, current)=>acc+current, 0))
+    
     // Check if a box was closed
-    // If pre line select box count is less than post line select box count current player closed a box
-    if (preBoxSitch.reduce((acc, current)=>acc+current, 0) < newBoxSitch.reduce((acc, current)=>acc+current, 0)) {
+    // If pre line select (absolute) box count is less than post line select box count current player closed a box
+    //////////////////////////////////////////////////////
+    // Developer note: I'm sorry for the following line //
+    if (Math.abs(preBoxSitch.reduce((acc, current)=>acc+current, 0)) < Math.abs(newBoxSitch.reduce((acc, current)=>acc+current, 0))) {
+        console.log("player: ", playerTurn);
         // Add another entry of the previous player to the playlist
         playerTurn.push(playerTurn[playerTurn.length - 1]);
+        message = `It is still ${playerTurn[playerTurn.length - 1]}'s turn`
     } else {
         const turn = playerTurn[playerTurn.length - 1] % 2 === 0 ? 1 : 2;
-
         playerTurn.push( turn );
+        message = `Player${turn}'s turn`;
     }
-    
+
     // Check if there are any more lines to fill
-    if (checkWinner()){
+    if (isWinner()){
         // Win logic
+        boxes = checkClosedBox();
+        // If player1 has highest number of boxes they win
+        if (numBoxes(boxes, 4) > numBoxes(boxes, -4)) {
+            message = `Player one wins with ${numBoxes(boxes, 4)} boxes!`;
+        // If player two has more, they win
+        } else if (numBoxes(boxes, -4) > numBoxes(boxes, 4)) {
+            message = `Player two wins with ${numBoxes(boxes, -4)} boxes!`;
+        // I guess there can be a tie. I just don't think I've ever seen it happen
+        } else {
+            mesage = "Can you even tie in dots and boxes? I'm sorry ... I didn't even account for this";
+        }
+
+        render();
+
+    } else {
+
+        render();
     }
-    
-    render();
+
+}
+
+// Render
+function render() {
+    // Iterate through selectedLines and activate the corrosponding ID
+    selectedLines.forEach(function (line, i){
+        lineEls[line - 1].style.backgroundColor = eval(`PLAYER${playerTurn[i]}COLOR`);
+    });
+
+    // Display boxes to fill in
+    boxes = checkClosedBox();
+    boxes.forEach(function(box, i) {
+        // Check if the box is at 4 (whether negative or positive)
+        if (Math.abs(box) >= 4) {
+            if (box === 4) {
+                boxesEls[i - 1].style.backgroundColor = PLAYER1COLOR;
+            } else if (box === -4) {
+                boxesEls[i - 1].style.backgroundColor = PLAYER2COLOR;
+            }
+        }
+    });
+
+    displayMessage();
 }
 
 // Check for closed box
@@ -104,7 +149,6 @@ function checkClosedBox() {
 
     // loop through selected lines
     selectedLines.forEach(function (line, i){
-
         // add one to the local var boxes index of each element of the lines array at the index of line
         let linesTouchBoxesArray = lines[line];
         
@@ -124,52 +168,36 @@ function checkClosedBox() {
 
         });
     });
-
     return boxes;
 }
 
-// Render
-function render() {
-    // Iterate through selectedLines and activate the corrosponding ID
-    selectedLines.forEach(function (line, i){
-        lineEls[line - 1].style.backgroundColor = eval(`PLAYER${playerTurn[i]}COLOR`);
-    });
 
-
-    // Display boxes to fill in
-    boxes = checkClosedBox();
-    boxes.forEach(function(box, i) {
-        // Check if the box is at 4 (whether negative or positive)
-        if (Math.abs(box) >= 4) {
-            if (box === 4) {
-                boxesEls[i - 1].style.backgroundColor = PLAYER1COLOR;
-            } else if (box === -4) {
-                boxesEls[i - 1].style.backgroundColor = PLAYER2COLOR;
-            }
-        }
-    });
-
-    // Display message
-
+// Check how many boxes a player has
+function numBoxes(boxArr, boxInt) {
+    return boxArr.filter(x => x == boxInt).length;
 }
 
 // Check for winner
-function checkWinner() {
-    // if every line has been selected the game is over
-    if (selectedLines.length >= 31) {
-        return true;
-    } else {
+function isWinner() {
+    // if less than all the lines have been selected
+    if (selectedLines.length < 31) {
         return false;
+    } else {
+        return true;
     }
 }  
 
+// Display message
+function displayMessage() {
+    messageArea.textContent = message; 
+}
 
 // Init
 function init() {
     selectedLines = [];
-    playerTurn = [1]
-    // experiment with both pieces of data combined combinedDataTest = { selectedLines: [], playerTurn : [] };
+    playerTurn = [1];
+    message = 'Player 1 selects the first line';
     render();
 }
 
-init()
+init();
