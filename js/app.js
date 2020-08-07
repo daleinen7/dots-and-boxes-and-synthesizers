@@ -1,8 +1,10 @@
 /*----- constants -----*/
-const player1Color = 'red'; //orange
-const player2Color = 'green';
+const PLAYER1COLOR = 'red';
+const PLAYER2COLOR = 'green';
 
 /*----- app's state (variables) -----*/
+
+
 
 const lines = [
     ['I am a hack'],
@@ -11,7 +13,7 @@ const lines = [
     [3],
     [4],
     [1],
-    [1,2], // this is painful
+    [1,2],
     [2,3],
     [3,4],
     [4],
@@ -117,17 +119,15 @@ function render() {
     // console.log(lineEls);
     // Iterate through selectedLines and activate the corrosponding ID
     selectedLines.forEach(function (line, i){
-        console.log(eval(`player${playerTurn[i]}Color`));
-        lineEls[line - 1].style.backgroundColor = eval(`player${playerTurn[i]}Color`);
+        lineEls[line - 1].style.backgroundColor = eval(`PLAYER${playerTurn[i]}COLOR`);
     });
 
 
     // Display boxes to fill in
     boxes = checkClosedBox();
-
     boxes.forEach(function(box, i) {
         if (box >= 4) {
-            boxesEls[i - 1].style.backgroundColor = player1Color;
+            boxesEls[i - 1].style.backgroundColor = 'orange';
         }
     });
 
