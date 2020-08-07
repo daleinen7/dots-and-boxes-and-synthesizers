@@ -1,6 +1,6 @@
 /*----- constants -----*/
 const PLAYER1COLOR = 'red';
-const PLAYER2COLOR = 'green';
+const PLAYER2COLOR = 'purple';
 
 /*----- app's state (variables) -----*/
 
@@ -76,7 +76,7 @@ function gameLogic(lineID) {
     selectedLines.push(lineID);
 
     const newBoxSitch = checkClosedBox().filter(box => box >= 4);
-    
+
     // Check if a box was closed
     // If pre line select box count is less than post line select box count current player closed a box
     if (preBoxSitch.reduce((acc, current)=>acc+current, 0) < newBoxSitch.reduce((acc, current)=>acc+current, 0)) {
@@ -100,14 +100,28 @@ function gameLogic(lineID) {
 function checkClosedBox() {
     // loop through selected lines referencing the lines array and every time a lineID references a box, add it to a local array of grid boxes then loop through that array and if it equals 4, close the box
 
-    const boxes = [0,0,0,0,0,0,0,0,0,0,0,0,0];
+    const boxes = ["also hack",0,0,0,0,0,0,0,0,0,0,0,0];
 
     // loop through selected lines
-    selectedLines.forEach(function (line){
-        // add one to the boxes index of each element of the lines array at the index of line
-        let linesArray = lines[line];
-        linesArray.forEach(function (la) {
-            boxes[la]++;
+    selectedLines.forEach(function (line, i){
+
+        // add one to the local var boxes index of each element of the lines array at the index of line
+        let linesTouchBoxesArray = lines[line];
+        
+        // for each element (or box the index of the line touches)
+        linesTouchBoxesArray.forEach(function (boxThatsTouched, j) {
+            // add one to the boxes 
+            boxes[boxThatsTouched]++;
+
+            // if the box equals 4 keep it at 4 if it was player 1 that closed it, or set it to -4 if player to closed it
+            if(boxes[boxThatsTouched] === 4) {
+                if (playerTurn[i] === 1) {
+                    boxes[boxThatsTouched] = 4;
+                } else if (playerTurn[i] === 2) {
+                    boxes[boxThatsTouched] = -4;
+                }
+            }
+
         });
     });
 
@@ -116,7 +130,6 @@ function checkClosedBox() {
 
 // Render
 function render() {
-    // console.log(lineEls);
     // Iterate through selectedLines and activate the corrosponding ID
     selectedLines.forEach(function (line, i){
         lineEls[line - 1].style.backgroundColor = eval(`PLAYER${playerTurn[i]}COLOR`);
@@ -126,8 +139,13 @@ function render() {
     // Display boxes to fill in
     boxes = checkClosedBox();
     boxes.forEach(function(box, i) {
-        if (box >= 4) {
-            boxesEls[i - 1].style.backgroundColor = 'orange';
+        // Check if the box is at 4 (whether negative or positive)
+        if (Math.abs(box) >= 4) {
+            if (box === 4) {
+                boxesEls[i - 1].style.backgroundColor = PLAYER1COLOR;
+            } else if (box === -4) {
+                boxesEls[i - 1].style.backgroundColor = PLAYER2COLOR;
+            }
         }
     });
 
@@ -150,6 +168,7 @@ function checkWinner() {
 function init() {
     selectedLines = [];
     playerTurn = [1]
+    // experiment with both pieces of data combined combinedDataTest = { selectedLines: [], playerTurn : [] };
     render();
 }
 
