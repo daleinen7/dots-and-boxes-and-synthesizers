@@ -16,7 +16,7 @@ main {
 .box {
     width: 200px;
     height: 200px;
-    background-color: orange;
+    background-color: darkslategray;
     text-align: center;
     font-size: 2em;
 }
