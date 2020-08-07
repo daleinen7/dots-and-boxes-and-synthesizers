@@ -1,6 +1,7 @@
 body {
     background-color: gray;
     color: white;
+    font-family: helvetica;
 }
 
 main {
@@ -16,6 +17,8 @@ main {
     width: 200px;
     height: 200px;
     background-color: orange;
+    text-align: center;
+    font-size: 2em;
 }
 
 .hor-line-row {
