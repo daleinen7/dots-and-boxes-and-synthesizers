@@ -4,19 +4,22 @@ const PLAYER2COLOR = 'var(--player-2-color)';
 const PLAYER1BOXCOLOR = 'var(--player-1-box)';
 const PLAYER2BOXCOLOR = 'var(--player-2-box)';
 
-const p1notes = {
-    Clow: 'audio/clow.mp3',
-    G: 'audio/g.mp3',
-    Chigh: 'audio/chigh.mp3',
-    E: 'audio/e.mp3'
-  };
+const notes = {
+    1 : {
+        1: 'audio/Clow.mp3',
+        2: 'audio/G.mp3',
+        3: 'audio/Chigh.mp3',
+        4: 'audio/E.mp3'
+    },
 
-  const p2notes = {
-    Eb: 'audio/eb.mp3',
-    F: 'audio/f.mp3',
-    Bblow: 'audio/bblow.mp3',
-    Bbhigh: 'audio/bbhigh.mp3'
-  }
+    2 : {
+        1: 'audio/Eb.mp3',
+        2: 'audio/F.mp3',
+        3: 'audio/Bblow.mp3',
+        4: 'audio/Bbhigh.mp3'
+    }
+}
+
 
 /*----- app's state (variables) -----*/
 
@@ -90,16 +93,17 @@ function gameLogic(lineID) {
 
     // Add selected line to selectedLines array
     selectedLines.push(lineID);
+    // Play musical notes
+    playMusicalNotes(lineID)
 
     const newBoxSitch = checkClosedBox().filter(box => Math.abs(box) >= 4);
-
-    // console.log(preBoxSitch.reduce((acc, current)=>acc+current, 0), newBoxSitch.reduce((acc, current)=>acc+current, 0))
     
     // Check if a box was closed
     // If pre line select (absolute) box count is less than post line select box count current player closed a box
     //////////////////////////////////////////////////////
     // Developer note: I'm sorry for the following line //
     if (Math.abs(preBoxSitch.reduce((acc, current)=>acc+current, 0)) < Math.abs(newBoxSitch.reduce((acc, current)=>acc+current, 0))) {
+        // TODO: why does sometimes player 1 not continue
         console.log("player: ", playerTurn);
         // Add another entry of the previous player to the playlist
         playerTurn.push(playerTurn[playerTurn.length - 1]);
@@ -162,11 +166,26 @@ function render() {
         }
     });
 
-    if (isWinner()) {
-        lineEls
-    }
-
     displayMessage();
+}
+
+function playMusicalNotes(line) {
+    // Check number of boxes line is touching
+    const boxesBeingPlayed = lines[line];
+    const boxes = checkClosedBox();
+    const player = playerTurn[playerTurn.length - 1];
+
+    // Play the musical notes of the player for each box and number of lines = note in sequence
+    boxesBeingPlayed.forEach(function (box){
+        playNote(player, boxes[box]);
+    });
+}
+
+function playNote(player, note) {
+    const audio = new Audio(notes[player][note]);
+    audio.volume = 0.5;
+    console.log(player,note, audio)
+    audio.play();
 }
 
 // Check for closed box
