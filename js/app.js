@@ -1,6 +1,22 @@
 /*----- constants -----*/
-const PLAYER1COLOR = 'red';
-const PLAYER2COLOR = 'purple';
+const PLAYER1COLOR = 'var(--player-1-color)';
+const PLAYER2COLOR = 'var(--player-2-color)';
+const PLAYER1BOXCOLOR = 'var(--player-1-box)';
+const PLAYER2BOXCOLOR = 'var(--player-2-box)';
+
+const p1notes = {
+    Clow: 'audio/clow.mp3',
+    G: 'audio/g.mp3',
+    Chigh: 'audio/chigh.mp3',
+    E: 'audio/e.mp3'
+  };
+
+  const p2notes = {
+    Eb: 'audio/eb.mp3',
+    F: 'audio/f.mp3',
+    Bblow: 'audio/bblow.mp3',
+    Bbhigh: 'audio/bbhigh.mp3'
+  }
 
 /*----- app's state (variables) -----*/
 
@@ -87,10 +103,18 @@ function gameLogic(lineID) {
         console.log("player: ", playerTurn);
         // Add another entry of the previous player to the playlist
         playerTurn.push(playerTurn[playerTurn.length - 1]);
+
         message = `It is still ${playerTurn[playerTurn.length - 1]}'s turn`
     } else {
         const turn = playerTurn[playerTurn.length - 1] % 2 === 0 ? 1 : 2;
         playerTurn.push( turn );
+
+        // Remove the hover class of the previous player and add the new player hover class
+        lineEls.forEach(function (line) {
+            line.classList.remove(`line-p${playerTurn[playerTurn.length - 2]}`);
+            line.classList.add(`line-p${turn}`);
+        });
+        
         message = `Player${turn}'s turn`;
     }
 
@@ -131,12 +155,16 @@ function render() {
         // Check if the box is at 4 (whether negative or positive)
         if (Math.abs(box) >= 4) {
             if (box === 4) {
-                boxesEls[i - 1].style.backgroundColor = PLAYER1COLOR;
+                boxesEls[i - 1].style.backgroundColor = PLAYER1BOXCOLOR;
             } else if (box === -4) {
-                boxesEls[i - 1].style.backgroundColor = PLAYER2COLOR;
+                boxesEls[i - 1].style.backgroundColor = PLAYER2BOXCOLOR;
             }
         }
     });
+
+    if (isWinner()) {
+        lineEls
+    }
 
     displayMessage();
 }

@@ -1,11 +1,13 @@
 :root {
-    --bg-color: #9c7a97;
-    --board: #888DA7;
-    --lines: #727897;
-    --player-1-color: #303633;
-    --player-2-color: #8BE8CB;
-    --player-1-box: #56615B;
-    --player-2-box: #BBF2E0;
+    --bg-color: #6A605C;
+    --board: #65544d;
+    --lines: #6A605C;
+    --player-1-color: #9B5094;
+    --player-1-hover: #D5AED1;
+    --player-1-box: #9A94BC;
+    --player-2-color: #3DE1DB;
+    --player-2-hover: #A7F1EF;
+    --player-2-box: #96EEEC;
 
 }
 
@@ -27,7 +29,7 @@ main {
 .box {
     width: 200px;
     height: 200px;
-    background-color: var(--board);
+    background-color: var(--bg-color);
     text-align: center;
     font-size: 2em;
 }
@@ -45,6 +47,14 @@ main {
     height: 20px;
     margin-left: 20px;
     background-color: var(--lines);
+}
+
+.line-p1:hover {
+    background-color: var(--player-1-hover);
+}
+
+.line-p2:hover {
+    background-color: var(--player-2-hover);
 }
 
 .vert-line {
