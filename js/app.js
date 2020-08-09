@@ -75,7 +75,7 @@ main.addEventListener('click', clickLine);
 function clickLine(e) {
     let line = e.target;
     let lineID = line.id.replace('line','');
-    
+
     if (line.id === 'line' + lineID){
         // If the line is already selected do nothing
         if (selectedLines.includes(lineID)) {
@@ -97,14 +97,12 @@ function gameLogic(lineID) {
     playMusicalNotes(lineID)
 
     const newBoxSitch = checkClosedBox().filter(box => Math.abs(box) >= 4);
-    
+
     // Check if a box was closed
     // If pre line select (absolute) box count is less than post line select box count current player closed a box
-    //////////////////////////////////////////////////////
-    // Developer note: I'm sorry for the following line //
     if (Math.abs(preBoxSitch.reduce((acc, current)=>acc+current, 0)) < Math.abs(newBoxSitch.reduce((acc, current)=>acc+current, 0))) {
         // TODO: why does sometimes player 1 not continue
-        console.log("player: ", playerTurn);
+        // console.log("player: ", playerTurn);
         // Add another entry of the previous player to the playlist
         playerTurn.push(playerTurn[playerTurn.length - 1]);
 
@@ -118,7 +116,7 @@ function gameLogic(lineID) {
             line.classList.remove(`line-p${playerTurn[playerTurn.length - 2]}`);
             line.classList.add(`line-p${turn}`);
         });
-        
+
         message = `Player${turn}'s turn`;
     }
 
@@ -170,25 +168,86 @@ function render() {
 }
 
 function playMusicalNotes(line) {
-    // Check number of boxes line is touching
+    // Check boxes that are playing
+    const boxes = boxesArray();
     const boxesBeingPlayed = lines[line];
-    const boxes = checkClosedBox();
-    const player = playerTurn[playerTurn.length - 1];
+    let notesBeingPlayed = [];
 
-    // Play the musical notes of the player for each box and number of lines = note in sequence
+    // Add the musical notes of each box to the notes to play array
     boxesBeingPlayed.forEach(function (box){
-        playNote(player, boxes[box]);
+        // filter each players notes they contributed to the box; put into array and get length
+        let p1Notes = boxes[box].filter(p => p === 1).length;
+        let p2Notes = boxes[box].filter(p => p === 2).length;
+
+        // add player one notes to notes being played array
+        while (p1Notes > 0) {
+            notesBeingPlayed.unshift(notes[1][p1Notes]);
+            p1Notes--;
+        }
+
+        // add player two notes to notes being played array
+        while (p2Notes > 0) {
+            notesBeingPlayed.unshift(notes[2][p2Notes]);
+            p2Notes--;
+        }
     });
+
+    // This will convert an array into an object, then eliminate the duplicates. Then I turn it back into an array
+    var hackIFoundOnline = new Set(notesBeingPlayed);
+    notesBeingPlayed = [...hackIFoundOnline];
+    playVictorySong(-4) //////////////////////////////////////////////////////// DELETE
+
+    notesBeingPlayed.forEach(function (note) {
+        playNote(note);
+    })
 }
 
-function playNote(player, note) {
-    const audio = new Audio(notes[player][note]);
+function playNote(note) {
+    const audio = new Audio(note);
     audio.volume = 0.5;
-    console.log(player,note, audio)
     audio.play();
 }
 
+// play a song at the end for the winner (pass either 4 or -4 depending on winner)
+function playVictorySong(winner) {
+    const boxes = checkClosedBox();
+    const boxesNotes = boxesArray();
+    const winningBoxes = [];
+    boxes.forEach(function (box, i) {
+        if (box === winner) {
+            winningBoxes.push(i);
+        }
+    })
+    // for each box that the winner took
+    winningBoxes.forEach(function (box, i) {
+        // play the notes in the order they appeared with a bit of a delay
+        const notesToPlay = [];
+        boxesNotes[box].forEach(function (boxOfNotes, j) {
+          console.log("box of notes: ",boxOfNotes);
+          console.log("winning boxes index: ",i);
+          console.log("boxes notes index: ",j);
+        })
+    });
+}
+
 // Check for closed box
+function boxesArray() {
+    // loop through selected lines referencing the lines array and every time a lineID references a box, add it to a local array of grid boxes then loop through that array and if it equals 4, close the box
+
+    const boxes = ["hack",[],[],[],[],[],[],[],[],[],[],[],[]];
+
+    // loop through selected lines
+    selectedLines.forEach(function (line, i){
+        // make a local array to hold the boxes that are touched by each played line
+        let boxesTouchingLine = lines[line];
+        // for every box that we're checking (that the line we're checking touch so two at most)
+        boxesTouchingLine.forEach(function (box, j) {
+            boxes[box].push( playerTurn[i] )
+        });
+    });
+    return boxes;
+}
+
 function checkClosedBox() {
     // loop through selected lines referencing the lines array and every time a lineID references a box, add it to a local array of grid boxes then loop through that array and if it equals 4, close the box
 
@@ -198,10 +257,10 @@ function checkClosedBox() {
     selectedLines.forEach(function (line, i){
         // add one to the local var boxes index of each element of the lines array at the index of line
         let linesTouchBoxesArray = lines[line];
-        
+
         // for each element (or box the index of the line touches)
         linesTouchBoxesArray.forEach(function (boxThatsTouched, j) {
-            // add one to the boxes 
+            // add one to the boxes
             boxes[boxThatsTouched]++;
 
             // if the box equals 4 keep it at 4 if it was player 1 that closed it, or set it to -4 if player to closed it
@@ -218,6 +277,14 @@ function checkClosedBox() {
     return boxes;
 }
 
+function checkBoxesMakeup(box) {
+    const notes = [];
+
+
+
+    return notes;
+}
+
 
 // Check how many boxes a player has
 function numBoxes(boxArr, boxInt) {
@@ -232,11 +299,11 @@ function isWinner() {
     } else {
         return true;
     }
-}  
+}
 
 // Display message
 function displayMessage() {
-    messageArea.textContent = message; 
+    messageArea.textContent = message;
 }
 
 // Init
