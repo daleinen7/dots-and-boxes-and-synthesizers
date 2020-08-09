@@ -1,13 +1,13 @@
 :root {
-    --bg-color: #6A605C;
-    --board: #65544d;
-    --lines: #6A605C;
-    --player-1-color: #9B5094;
-    --player-1-hover: #D5AED1;
-    --player-1-box: #9A94BC;
-    --player-2-color: #3DE1DB;
-    --player-2-hover: #A7F1EF;
-    --player-2-box: #96EEEC;
+    --bg-color: #AAB3C0;
+    --board: #875400;
+    --lines: #FFF3DF;
+    --player-1-color: #1A0B5D;
+    --player-1-hover: #483892;
+    --player-1-box: #6455AA;
+    --player-2-color: #005A3D;
+    --player-2-hover: #2A8D6D;
+    --player-2-box: #46A485;
 
 }
 
