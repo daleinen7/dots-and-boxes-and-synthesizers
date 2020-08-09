@@ -211,10 +211,10 @@ function playMusicalNotes(line) {
     const notesBeingPlayed = getMusicalNotes(boxesBeingPlayed);
 
     notesBeingPlayed.forEach(function (note) {
-        playNote(note, 0.6 - ( notesBeingPlayed.length * 0.05 ));
+        playNote(note, 0.6 - ( notesBeingPlayed.length * 0.07 ));
     })
 }
- 
+
 function playNote(note, vol) {
     const audio = new Audio(note);
     audio.volume = vol;

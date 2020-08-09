@@ -1,7 +1,7 @@
 :root {
     --bg-color: #AAB3C0;
     --board: #875400;
-    --lines: #FFF3DF;
+    --lines: #a1aab7;
     --player-1-color: #1A0B5D;
     --player-1-hover: #483892;
     --player-1-box: #6455AA;
@@ -24,6 +24,8 @@ main {
     justify-content: start;
     flex-wrap: wrap;
     background-color: var(--board);
+    border: solid #456123 0;
+    border-radius: 5px;
 }
 
 .box {
