@@ -71,7 +71,7 @@ const messageArea = document.querySelector('h2');
 main.addEventListener('click', clickLine);
 
 /*----- functions -----*/
-// Click logic
+// When a line is clicked
 function clickLine(e) {
     let line = e.target;
     let lineID = line.id.replace('line','');
@@ -89,14 +89,14 @@ function clickLine(e) {
 
 // Handle Main Logic
 function gameLogic(lineID) {
-    const preBoxSitch = checkClosedBox().filter(box => Math.abs(box) >= 4);
+    const preBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4);
 
     // Add selected line to selectedLines array
     selectedLines.push(lineID);
     // Play musical notes
     playMusicalNotes(lineID)
 
-    const newBoxSitch = checkClosedBox().filter(box => Math.abs(box) >= 4);
+    const newBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4);
 
     // Check if a box was closed
     // If pre line select (absolute) box count is less than post line select box count current player closed a box
@@ -107,6 +107,8 @@ function gameLogic(lineID) {
         playerTurn.push(playerTurn[playerTurn.length - 1]);
 
         message = `It is still ${playerTurn[playerTurn.length - 1]}'s turn`
+
+
     } else {
         const turn = playerTurn[playerTurn.length - 1] % 2 === 0 ? 1 : 2;
         playerTurn.push( turn );
@@ -123,13 +125,17 @@ function gameLogic(lineID) {
     // Check if there are any more lines to fill
     if (isWinner()){
         // Win logic
-        boxes = checkClosedBox();
+        boxes = getBoxLineCount();
         // If player1 has highest number of boxes they win
         if (numBoxes(boxes, 4) > numBoxes(boxes, -4)) {
             message = `Player one wins with ${numBoxes(boxes, 4)} boxes!`;
+            setTimeout(playVictorySong(4), 500);
+
         // If player two has more, they win
         } else if (numBoxes(boxes, -4) > numBoxes(boxes, 4)) {
             message = `Player two wins with ${numBoxes(boxes, -4)} boxes!`;
+            setTimeout(playVictorySong(-4), 500);
+
         // I guess there can be a tie. I just don't think I've ever seen it happen
         } else {
             mesage = "Can you even tie in dots and boxes? I'm sorry ... I didn't even account for this";
@@ -152,7 +158,7 @@ function render() {
     });
 
     // Display boxes to fill in
-    boxes = checkClosedBox();
+    boxes = getBoxLineCount();
     boxes.forEach(function(box, i) {
         // Check if the box is at 4 (whether negative or positive)
         if (Math.abs(box) >= 4) {
@@ -167,51 +173,58 @@ function render() {
     displayMessage();
 }
 
-function playMusicalNotes(line) {
-    // Check boxes that are playing
-    const boxes = boxesArray();
-    const boxesBeingPlayed = lines[line];
+function getMusicalNotes(boxesPlayed) {
     let notesBeingPlayed = [];
+    const boxes = getPlayerLinesBox();
 
     // Add the musical notes of each box to the notes to play array
-    boxesBeingPlayed.forEach(function (box){
-        // filter each players notes they contributed to the box; put into array and get length
-        let p1Notes = boxes[box].filter(p => p === 1).length;
-        let p2Notes = boxes[box].filter(p => p === 2).length;
+    boxesPlayed.forEach(function (box){
+          // filter each players notes they contributed to the box; put into array and get length
+          let p1Notes = boxes[box].filter(p => p === 1).length;
+          let p2Notes = boxes[box].filter(p => p === 2).length;
 
-        // add player one notes to notes being played array
-        while (p1Notes > 0) {
-            notesBeingPlayed.unshift(notes[1][p1Notes]);
-            p1Notes--;
-        }
+          // add player one notes to notes being played array
+          while (p1Notes > 0) {
+              notesBeingPlayed.unshift(notes[1][p1Notes]);
+              p1Notes--;
+          }
 
-        // add player two notes to notes being played array
-        while (p2Notes > 0) {
-            notesBeingPlayed.unshift(notes[2][p2Notes]);
-            p2Notes--;
-        }
+          // add player two notes to notes being played array
+          while (p2Notes > 0) {
+              notesBeingPlayed.unshift(notes[2][p2Notes]);
+              p2Notes--;
+          }
     });
 
     // This will convert an array into an object, then eliminate the duplicates. Then I turn it back into an array
     var hackIFoundOnline = new Set(notesBeingPlayed);
     notesBeingPlayed = [...hackIFoundOnline];
-    playVictorySong(-4) //////////////////////////////////////////////////////// DELETE
 
-    notesBeingPlayed.forEach(function (note) {
-        playNote(note);
-    })
+    return notesBeingPlayed;
+
 }
 
-function playNote(note) {
+function playMusicalNotes(line) {
+    // Check boxes that are playing
+    const boxesBeingPlayed = lines[line];
+
+    const notesBeingPlayed = getMusicalNotes(boxesBeingPlayed);
+
+    notesBeingPlayed.forEach(function (note) {
+        playNote(note, 0.6 - ( notesBeingPlayed.length * 0.05 ));
+    })
+}
+ 
+function playNote(note, vol) {
     const audio = new Audio(note);
-    audio.volume = 0.5;
+    audio.volume = vol;
     audio.play();
 }
 
 // play a song at the end for the winner (pass either 4 or -4 depending on winner)
 function playVictorySong(winner) {
-    const boxes = checkClosedBox();
-    const boxesNotes = boxesArray();
+    const boxes = getBoxLineCount();
+    const boxesNotes = getPlayerLinesBox();
     const winningBoxes = [];
     boxes.forEach(function (box, i) {
         if (box === winner) {
@@ -220,18 +233,21 @@ function playVictorySong(winner) {
     })
     // for each box that the winner took
     winningBoxes.forEach(function (box, i) {
+        // get the order each player played in the box
+        const playOrder = boxesNotes[box];
+        // get the actual musical notes of the box
+        const musicalNotesArray  = getMusicalNotes(playOrder);
+
         // play the notes in the order they appeared with a bit of a delay
         const notesToPlay = [];
         boxesNotes[box].forEach(function (boxOfNotes, j) {
-          console.log("box of notes: ",boxOfNotes);
-          console.log("winning boxes index: ",i);
-          console.log("boxes notes index: ",j);
+          setTimeout(playNote, 500 * j + (2000 * i), musicalNotesArray[j], 0.6);
         })
     });
 }
 
 // Check for closed box
-function boxesArray() {
+function getPlayerLinesBox() {
     // loop through selected lines referencing the lines array and every time a lineID references a box, add it to a local array of grid boxes then loop through that array and if it equals 4, close the box
 
     const boxes = ["hack",[],[],[],[],[],[],[],[],[],[],[],[]];
@@ -248,7 +264,7 @@ function boxesArray() {
     return boxes;
 }
 
-function checkClosedBox() {
+function getBoxLineCount() {
     // loop through selected lines referencing the lines array and every time a lineID references a box, add it to a local array of grid boxes then loop through that array and if it equals 4, close the box
 
     const boxes = ["also hack",0,0,0,0,0,0,0,0,0,0,0,0];
@@ -276,15 +292,6 @@ function checkClosedBox() {
     });
     return boxes;
 }
-
-function checkBoxesMakeup(box) {
-    const notes = [];
-
-
-
-    return notes;
-}
-
 
 // Check how many boxes a player has
 function numBoxes(boxArr, boxInt) {
