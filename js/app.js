@@ -89,18 +89,24 @@ function clickLine(e) {
 
 // Handle Main Logic
 function gameLogic(lineID) {
-    const preBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4);
+    // const preBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4);
+    const preBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4).length;
+    console.log("preSitch", preBoxSitch)
 
     // Add selected line to selectedLines array
     selectedLines.push(lineID);
     // Play musical notes
     playMusicalNotes(lineID)
 
-    const newBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4);
+    const newBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4).length;
 
     // Check if a box was closed
     // If pre line select (absolute) box count is less than post line select box count current player closed a box
-    if (Math.abs(preBoxSitch.reduce((acc, current)=>acc+current, 0)) < Math.abs(newBoxSitch.reduce((acc, current)=>acc+current, 0))) {
+
+    console.log("newSitch", getBoxLineCount().filter(box => Math.abs(box) >= 4))
+    // console.log("preSitch", Math.abs(preBoxSitch.reduce((acc, current)=>acc+current, 0)))
+    // console.log("newSitch", Math.abs(newBoxSitch.reduce((acc, current)=>acc+current, 0)))
+    if (preBoxSitch < newBoxSitch) {
         // TODO: why does sometimes player 1 not continue
         // console.log("player: ", playerTurn);
         // Add another entry of the previous player to the playlist
