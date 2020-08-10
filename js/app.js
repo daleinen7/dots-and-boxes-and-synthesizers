@@ -104,11 +104,9 @@ function gameLogic(lineID) {
     // If pre line select (absolute) box count is less than post line select box count current player closed a box
 
     console.log("newSitch", getBoxLineCount().filter(box => Math.abs(box) >= 4))
-    // console.log("preSitch", Math.abs(preBoxSitch.reduce((acc, current)=>acc+current, 0)))
-    // console.log("newSitch", Math.abs(newBoxSitch.reduce((acc, current)=>acc+current, 0)))
+
     if (preBoxSitch < newBoxSitch) {
-        // TODO: why does sometimes player 1 not continue
-        // console.log("player: ", playerTurn);
+
         // Add another entry of the previous player to the playlist
         playerTurn.push(playerTurn[playerTurn.length - 1]);
 
@@ -175,7 +173,7 @@ function render() {
             }
         }
     });
-
+    comp.textContent = "Bs bro!";
     displayMessage();
 }
 
