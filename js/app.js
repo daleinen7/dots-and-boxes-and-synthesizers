@@ -91,7 +91,6 @@ function clickLine(e) {
 function gameLogic(lineID) {
     // const preBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4);
     const preBoxSitch = getBoxLineCount().filter(box => Math.abs(box) >= 4).length;
-    console.log("preSitch", preBoxSitch)
 
     // Add selected line to selectedLines array
     selectedLines.push(lineID);
@@ -102,8 +101,6 @@ function gameLogic(lineID) {
 
     // Check if a box was closed
     // If pre line select (absolute) box count is less than post line select box count current player closed a box
-
-    console.log("newSitch", getBoxLineCount().filter(box => Math.abs(box) >= 4))
 
     if (preBoxSitch < newBoxSitch) {
 
@@ -177,7 +174,7 @@ function render() {
     displayMessage();
 }
 
-function getMusicalNotes(boxesPlayed) {
+function getMusicalNotes(boxesPlayed, turn) {
     let notesBeingPlayed = [];
     const boxes = getPlayerLinesBox();
 
@@ -200,9 +197,11 @@ function getMusicalNotes(boxesPlayed) {
           }
     });
 
-    // This will convert an array into an object, then eliminate the duplicates. Then I turn it back into an array
-    var hackIFoundOnline = new Set(notesBeingPlayed);
-    notesBeingPlayed = [...hackIFoundOnline];
+    if (turn) {
+        // If this is a regular turn (not the ending song) this will convert an array into an object, then eliminate the duplicates. Then I turn it back into an array
+        var hackIFoundOnline = new Set(notesBeingPlayed);
+        notesBeingPlayed = [...hackIFoundOnline];
+    }
 
     return notesBeingPlayed;
 
@@ -212,7 +211,8 @@ function playMusicalNotes(line) {
     // Check boxes that are playing
     const boxesBeingPlayed = lines[line];
 
-    const notesBeingPlayed = getMusicalNotes(boxesBeingPlayed);
+    // true because we're just playing a turn sound
+    const notesBeingPlayed = getMusicalNotes(boxesBeingPlayed, true);
 
     notesBeingPlayed.forEach(function (note) {
         playNote(note, 0.6 - ( notesBeingPlayed.length * 0.07 ));
@@ -226,7 +226,42 @@ function playNote(note, vol) {
 }
 
 // play a song at the end for the winner (pass either 4 or -4 depending on winner)
+// function playVictorySong(winner) {
+//     const boxes = getBoxLineCount();
+//     const boxesNotes = getPlayerLinesBox();
+//     const winningBoxes = [];
+//     boxes.forEach(function (box, i) {
+//         if (box === winner) {
+//             winningBoxes.push(i);
+//         }
+//     })
+//     // for each box that the winner took
+//     winningBoxes.forEach(function (box, i) {
+//         // get the order each player played in the box
+//         const playOrder = boxesNotes[box];
+//         console.log("Play Order is passed to getMusicalNotes", playOrder)
+//         // get the actual musical notes of the box
+//         const musicalNotesArray  = getMusicalNotes(playOrder);
+//         console.log("musicalNotesArray", musicalNotesArray)
+//
+//         // play the notes in the order they appeared with a bit of a delay
+//         const notesToPlay = [];
+//         boxesNotes[box].forEach(function (boxOfNotes, j) {
+//             setTimeout(function (){
+//                 console.log("boxesNotes", boxesNotes)
+//                 console.log("box", box)
+//                 console.log("i", i)
+//                 console.log("j", j)
+//
+//             }, 500 * j + (2000 * i), musicalNotesArray[j], 0.6);
+//
+//             setTimeout(playNote, 500 * j + (2000 * i), musicalNotesArray[j], 0.6);
+//         })
+//     });
+// }
+
 function playVictorySong(winner) {
+    // find what boxes are the winning boxes
     const boxes = getBoxLineCount();
     const boxesNotes = getPlayerLinesBox();
     const winningBoxes = [];
@@ -235,19 +270,16 @@ function playVictorySong(winner) {
             winningBoxes.push(i);
         }
     })
-    // for each box that the winner took
-    winningBoxes.forEach(function (box, i) {
-        // get the order each player played in the box
-        const playOrder = boxesNotes[box];
-        // get the actual musical notes of the box
-        const musicalNotesArray  = getMusicalNotes(playOrder);
 
-        // play the notes in the order they appeared with a bit of a delay
-        const notesToPlay = [];
-        boxesNotes[box].forEach(function (boxOfNotes, j) {
-          setTimeout(playNote, 500 * j + (2000 * i), musicalNotesArray[j], 0.6);
-        })
+    // find what notes need played (pass false because this is the ending song)
+    const notesToPlay = getMusicalNotes(winningBoxes, false);
+    console.log(notesToPlay);
+
+    // for each notesToPlay play interval
+    notesToPlay.forEach((note, i) => {
+        setTimeout(playNote, 300 * i, note, 0.6);
     });
+
 }
 
 // Check for closed box
