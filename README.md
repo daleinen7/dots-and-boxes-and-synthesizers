@@ -2,7 +2,7 @@
 ####
 
 [PLAY THE GAME](https://(LINK_GOES_HERE))
-images go here
+![screenshot](screenshot.jpg)
 
 ### Language Used
 HTML, CSS, Javascript, Reason
