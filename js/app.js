@@ -225,41 +225,6 @@ function playNote(note, vol) {
     audio.play();
 }
 
-// play a song at the end for the winner (pass either 4 or -4 depending on winner)
-// function playVictorySong(winner) {
-//     const boxes = getBoxLineCount();
-//     const boxesNotes = getPlayerLinesBox();
-//     const winningBoxes = [];
-//     boxes.forEach(function (box, i) {
-//         if (box === winner) {
-//             winningBoxes.push(i);
-//         }
-//     })
-//     // for each box that the winner took
-//     winningBoxes.forEach(function (box, i) {
-//         // get the order each player played in the box
-//         const playOrder = boxesNotes[box];
-//         console.log("Play Order is passed to getMusicalNotes", playOrder)
-//         // get the actual musical notes of the box
-//         const musicalNotesArray  = getMusicalNotes(playOrder);
-//         console.log("musicalNotesArray", musicalNotesArray)
-//
-//         // play the notes in the order they appeared with a bit of a delay
-//         const notesToPlay = [];
-//         boxesNotes[box].forEach(function (boxOfNotes, j) {
-//             setTimeout(function (){
-//                 console.log("boxesNotes", boxesNotes)
-//                 console.log("box", box)
-//                 console.log("i", i)
-//                 console.log("j", j)
-//
-//             }, 500 * j + (2000 * i), musicalNotesArray[j], 0.6);
-//
-//             setTimeout(playNote, 500 * j + (2000 * i), musicalNotesArray[j], 0.6);
-//         })
-//     });
-// }
-
 function playVictorySong(winner) {
     // find what boxes are the winning boxes
     const boxes = getBoxLineCount();
