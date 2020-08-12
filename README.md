@@ -5,7 +5,7 @@
 ![screenshot](screenshot.png)
 
 ### Language Used
-HTML, CSS, Javascript, Reason
+HTML, CSS, Javascript, Garageband
 ## Rules
 The basic rules of Dots and Boxes are players take turns connecting lines on a grid of dots. If a player connects a box they get a point and can make an additional move. When there are no more lines to draw, the points are added up and the player with the most completed boxes wins.
 
