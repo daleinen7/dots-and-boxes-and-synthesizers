@@ -123,6 +123,9 @@ function gameLogic(lineID) {
         message = `Player${turn}'s turn`;
     }
 
+    console.log("selectedLines", selectedLines);
+    console.log("playerTurn", playerTurn);
+
     // Check if there are any more lines to fill
     if (isWinner()){
         // Win logic
@@ -131,24 +134,19 @@ function gameLogic(lineID) {
         if (numBoxes(boxes, 4) > numBoxes(boxes, -4)) {
             message = `Player one wins with ${numBoxes(boxes, 4)} boxes!`;
             setTimeout(playVictorySong(4), 500);
-
         // If player two has more, they win
         } else if (numBoxes(boxes, -4) > numBoxes(boxes, 4)) {
             message = `Player two wins with ${numBoxes(boxes, -4)} boxes!`;
             setTimeout(playVictorySong(-4), 500);
-
-        // I guess there can be a tie. I just don't think I've ever seen it happen
+        // If there is a tie
         } else {
-            mesage = "Can you even tie in dots and boxes? I'm sorry ... I didn't even account for this";
+            // if (numBoxes(boxes, -4) === numBoxes(boxes, 4))
+            message = "There is no winner. And thus there is no winner song.";
         }
-
         render();
-
     } else {
-
         render();
     }
-
 }
 
 // Render
@@ -197,6 +195,7 @@ function getMusicalNotes(boxesPlayed, turn) {
     });
 
     if (turn) {
+
         // If this is a regular turn (not the ending song) this will convert an array into an object, then eliminate the duplicates. Then I turn it back into an array
         var hackIFoundOnline = new Set(notesBeingPlayed);
         notesBeingPlayed = [...hackIFoundOnline];
@@ -207,12 +206,14 @@ function getMusicalNotes(boxesPlayed, turn) {
 }
 
 function playMusicalNotes(line) {
+
     // Check boxes that are playing
     const boxesBeingPlayed = lines[line];
 
-    // true because we're just playing a turn sound
+    // true is passed because we're just playing a turn sound
     const notesBeingPlayed = getMusicalNotes(boxesBeingPlayed, true);
 
+    // play all the notes in the notesBeingPlayed array
     notesBeingPlayed.forEach(function (note) {
         playNote(note, 0.6 - ( notesBeingPlayed.length * 0.07 ));
     })
@@ -254,8 +255,10 @@ function getPlayerLinesBox() {
 
     // loop through selected lines
     selectedLines.forEach(function (line, i){
+
         // make a local array to hold the boxes that are touched by each played line
         let boxesTouchingLine = lines[line];
+
         // for every box that we're checking (that the line we're checking touch so two at most)
         boxesTouchingLine.forEach(function (box, j) {
             boxes[box].push( playerTurn[i] )
@@ -300,6 +303,7 @@ function numBoxes(boxArr, boxInt) {
 
 // Check for winner
 function isWinner() {
+    console.log(selectedLines.length);
     // if less than all the lines have been selected
     if (selectedLines.length < 31) {
         return false;
@@ -317,8 +321,10 @@ function displayMessage() {
 function init() {
     selectedLines = [];
     playerTurn = [1];
+
     message = 'Player 1 selects the first line';
     render();
+
 }
 
 init();
