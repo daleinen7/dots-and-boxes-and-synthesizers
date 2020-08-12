@@ -170,7 +170,6 @@ function render() {
             }
         }
     });
-    comp.textContent = "Bs bro!";
     displayMessage();
 }
 
