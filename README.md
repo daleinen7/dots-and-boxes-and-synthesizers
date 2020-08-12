@@ -1,8 +1,8 @@
 # Dots and Boxes and Synthesizers
 ####
 
-[PLAY THE GAME](https://(LINK_GOES_HERE))
-![screenshot](screenshot.jpg)
+[PLAY THE GAME](https://daleinen7.github.io/dots-and-boxes/)
+![screenshot](screenshot.png)
 
 ### Language Used
 HTML, CSS, Javascript, Reason
@@ -20,8 +20,9 @@ The winner gets to hear their boxes played into a unique composition for each ga
 
 ## Composition
 
-Score theory and composition by [.::.](https://o88o.bandcamp.com/).
+Score theory and composition by [.::.](https://o88o.bandcamp.com/)
 
 ## Next Steps
 1. Given time and energy I'd like to make each note glow as it's played.
 2. A responsive layout would be nice.
+3. Handling a tie (maybe play every square?)
