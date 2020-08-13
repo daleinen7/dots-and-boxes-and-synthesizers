@@ -24,7 +24,7 @@ const notes = {
 /*----- app's state (variables) -----*/
 
 const lines = [
-    ['I am a hack'],
+    ['0'],
     [1],
     [2],
     [3],
@@ -122,9 +122,6 @@ function gameLogic(lineID) {
 
         message = `Player${turn}'s turn`;
     }
-
-    console.log("selectedLines", selectedLines);
-    console.log("playerTurn", playerTurn);
 
     // Check if there are any more lines to fill
     if (isWinner()){
@@ -251,7 +248,7 @@ function playVictorySong(winner) {
 function getPlayerLinesBox() {
     // loop through selected lines referencing the lines array and every time a lineID references a box, add it to a local array of grid boxes then loop through that array and if it equals 4, close the box
 
-    const boxes = ["hack",[],[],[],[],[],[],[],[],[],[],[],[]];
+    const boxes = [[],[],[],[],[],[],[],[],[],[],[],[],[]];
 
     // loop through selected lines
     selectedLines.forEach(function (line, i){
@@ -270,7 +267,7 @@ function getPlayerLinesBox() {
 function getBoxLineCount() {
     // loop through selected lines referencing the lines array and every time a lineID references a box, add it to a local array of grid boxes then loop through that array and if it equals 4, close the box
 
-    const boxes = ["also hack",0,0,0,0,0,0,0,0,0,0,0,0];
+    const boxes = [0,0,0,0,0,0,0,0,0,0,0,0,0];
 
     // loop through selected lines
     selectedLines.forEach(function (line, i){
